@@ -59,20 +59,24 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
         // Menampilkan form edit produk
-        return view('products.edit', compact('product'));
+        $product = Product::findOrFail($id);
+        $categories = Category::all();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
+
+        $product = Product::findOrFail($id);
         // Validasi dan update produk
         $data = $request->validate([
-            'sku' => 'required|string|max:100|unique:products,sku,' . $product->id,
+            'sku' => 'required|string|max:100|unique:products,sku,' . $id,
             'name' => 'required|string|max:100',
             'category_id' => 'nullable|exists:categories,id',
             'price' => 'nullable|numeric',
